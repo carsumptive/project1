@@ -173,7 +173,9 @@ library(ggplot2)
 
 theme_set(theme_dark())
 
-sat_data %>% ggplot(aes(x = Year, fill = Purpose))+geom_bar(alpha=.5)+geom_hline(yintercept = 0)+ facet_wrap(~`Users`,scales = "free_y", dir="v")+scale_x_discrete(breaks = scales::pretty_breaks(n = 15))+theme(legend.position = "bottom")+ggtitle("Satellite Purpose and launch count over time")+xlab("Epoch")+ylab("Launch Count")+ theme(axis.text.x = element_text(size=5, angle = 45, vjust = 0.5, hjust=1))+geom_text(y=Purpose, label=Purpose,check_overlap = TRUE)
+sat_data <- sat_data %>% group_by(Year,Purpose,Users) %>% mutate(count = n())
+
+sat_data %>% ggplot(aes(x = Year, fill = Purpose))+geom_bar(alpha=.5)+geom_hline(yintercept = 0)+ facet_wrap(~`Users`,scales = "free_y", dir="v")+scale_x_discrete(breaks = scales::pretty_breaks(n = 15))+theme(legend.position = "bottom")+ggtitle("Satellite Purpose and launch count over time")+xlab("Epoch")+ylab("Launch Count")+ theme(axis.text.x = element_text(size=5, angle = 45, vjust = 0.5, hjust=1))+geom_text(aes(y=count/2,label=count),check_overlap = TRUE)
 
 ```
 The graphic below depicts the density distribution of satellites in orbit by launch mass for each of the 4 distinct classes of orbit: Low Earth (LEO), Elliptical, Geostationary (GEO), and Medium Earth (MEO). The total distribution of the satellites is also shown with the blue density line. It is interesting that each of the classes seems to have it's own small domain of satellite masses, with the larger masses taking up the higher orbits. Interestingly, LEO class satellites do seem to span into significantly higher masses than Elliptical or MEO -- likely experimental satellites and ease of use case in LEO driving this.
